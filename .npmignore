@@ -1,0 +1,10 @@
+*.coffee
+.DS_Store
+.git
+.gitignore
+.coveralls.yml
+
+build/
+coverage/
+docs/
+test/
