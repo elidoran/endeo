@@ -43,9 +43,9 @@
     "mocha-lcov-reporter": "^1.3.0"
   },
   "dependencies": {
-    "debyte": "0.0.0",
-    "destring": "0.0.0",
-    "enbyte": "0.0.0"
+    "debyte": "0.0.1",
+    "destring": "0.0.1",
+    "enbyte": "0.0.1"
   },
   "engines": {
     "node": ">=4"
