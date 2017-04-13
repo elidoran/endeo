@@ -1,6 +1,7 @@
-enbyte  = require 'enbyte'
-debyte  = require 'debyte'
-debytes = require 'debytes'
+enbyte   = require 'enbyte'
+debyte   = require 'debyte'
+destring = require 'destring'
+# debytes = require 'debytes'
 
 class Endeo
 
