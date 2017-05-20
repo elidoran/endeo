@@ -50,14 +50,16 @@ class Endeo
     output.marker @B.TERMINATOR
     output.complete()
 
-  special: (object) -> @_special object, @Output()
 
-  _special: (object, output) ->
+  objectWithSpec: (object, spec) -> @_objectWithSpec object, spec, @Output()
+  special: (object) -> @_objectWithSpec object, object.$ENDEO_SPECIAL, @Output()
+
+  _objectWithSpec: (object, spec, output) ->
 
     # we don't need to send B.SPECIAL first, we can skip it
     # on the top-level chunk.
     output.consumeMarkerIf @B.SPECIAL
-    @enbyte.special object.$ENDEO_SPECIAL, object, output
+    @enbyte.special spec, object, output
     output.marker @B.TERMINATOR
     output.complete()
 

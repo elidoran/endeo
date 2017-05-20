@@ -589,7 +589,7 @@ describe 'test endeo', ->
       expected = answer[i]
       assert.equal actual, expected, 'byte mismatch at ' + i
 
-  [ 'object', 'special' ].forEach (method) ->
+  [ 'object', 'special', 'objectWithSpec' ].forEach (method) ->
 
     it 'should encode a spec\'d object via ' + method + ' (defaults)', ->
 
@@ -612,7 +612,8 @@ describe 'test endeo', ->
       assert.equal spec.id, 0
 
       spec.imprint object
-      result = endeo[method] object
+      arg2 = if method is 'objectWithSpec' then object.$ENDEO_SPECIAL
+      result = endeo[method] object, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
@@ -648,7 +649,8 @@ describe 'test endeo', ->
       assert.equal spec.id, 0
 
       spec.imprint object
-      result = endeo[method] object
+      arg2 = if method is 'objectWithSpec' then object.$ENDEO_SPECIAL
+      result = endeo[method] object, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
@@ -681,7 +683,8 @@ describe 'test endeo', ->
       assert.equal spec.id, 0
 
       spec.imprint object
-      result = endeo[method] object
+      arg2 = if method is 'objectWithSpec' then object.$ENDEO_SPECIAL
+      result = endeo[method] object, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
@@ -717,7 +720,8 @@ describe 'test endeo', ->
       assert.equal spec.id, 0
 
       spec.imprint object
-      result = endeo[method] object
+      arg2 = if method is 'objectWithSpec' then object.$ENDEO_SPECIAL
+      result = endeo[method] object, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
@@ -771,7 +775,8 @@ describe 'test endeo', ->
       assert.equal spec.id, 1
       spec.imprint object.b
 
-      result = endeo[method] object
+      arg2 = if method is 'objectWithSpec' then object.$ENDEO_SPECIAL
+      result = endeo[method] object, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
@@ -825,7 +830,8 @@ describe 'test endeo', ->
       assert.equal spec.id, 1
       spec.imprint object.b
 
-      result = endeo[method] object
+      arg2 = if method is 'objectWithSpec' then object.$ENDEO_SPECIAL
+      result = endeo[method] object, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
@@ -861,7 +867,8 @@ describe 'test endeo', ->
 
       thing = new Thing
 
-      result = endeo[method] thing
+      arg2 = if method is 'objectWithSpec' then thing.$ENDEO_SPECIAL
+      result = endeo[method] thing, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
@@ -897,7 +904,8 @@ describe 'test endeo', ->
 
       thing = new Thing 4, 5, 6
 
-      result = endeo[method] thing
+      arg2 = if method is 'objectWithSpec' then thing.$ENDEO_SPECIAL
+      result = endeo[method] thing, arg2
 
       assert result, 'should have a result'
       buffer = result.buffer
