@@ -4,7 +4,9 @@
 .gitignore
 .coveralls.yml
 
+benchmark/
 build/
 coverage/
 docs/
+examples/
 test/
