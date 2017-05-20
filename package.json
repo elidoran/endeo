@@ -45,11 +45,12 @@
     "coffee-script": "^1.12.6",
     "coffeelint": "^1.16.0",
     "coveralls": "^2.13.1",
-    "debyte": "^0.2.0",
+    "debyte": "^0.2.1",
     "enbyte": "^0.1.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.4.1",
-    "mocha-lcov-reporter": "^1.3.0"
+    "mocha-lcov-reporter": "^1.3.0",
+    "unstring": "^0.3.0"
   },
   "dependencies": {},
   "engines": {

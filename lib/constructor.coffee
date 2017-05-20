@@ -13,7 +13,7 @@ module.exports = (options) ->
 
   # use an unstring for string replacement management
   # either one provided via options or package `unstring`
-  @unstring = opts.unstring ? require('unstring') strings:opts.strings
+  @unstring = opts.unstring ? require('unstring') opts.unstringOptions ? strings:opts.strings
 
   # the only byte endeo needs to know. from options or the default.
   @B = opts.bytes ? require '@endeo/bytes'

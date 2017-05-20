@@ -173,7 +173,8 @@ describe 'test endeo', ->
       Buffer.from 'testing'
       TERMINATOR_BUFFER
     ]
-    endeo = build()
+    # enable auto-learning 1 string
+    endeo = build unstringOptions: limit:1
     result = endeo.string 'testing'
     # showBuffers answer, result.buffer
     assert.equal result.buffer.equals(answer), true
@@ -237,7 +238,8 @@ describe 'test endeo', ->
       Buffer.from string
       TERMINATOR_BUFFER
     ]
-    endeo = build()
+    # enable auto-learning 1 string
+    endeo = build unstringOptions: limit:1
     result = endeo.array [ string ]
     assert.equal result.buffer.equals(answer), true
 
