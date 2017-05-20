@@ -10,3 +10,6 @@ coverage/
 docs/
 examples/
 test/
+
+# until I actually implement it...
+lib/import.js
