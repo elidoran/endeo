@@ -6,13 +6,13 @@
 
 Encode and decode objects, arrays, strings into bytes.
 
-**en** code + **de** code = **o** bject
+**endeo** => **en** code + **de** code = **o** bject
 
-The majority of encode and decode work is done by packages [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte). Their perspective is about the values they're given to encode and decode.
+The majority of encode and decode work is done by packages [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte). Their perspective is about the values they're given to encode and decode. For example, enbyte encodes `{}` as `EMPTY_OBJECT` and endeo encodes it as `[OBJECT, TERMINATOR]`
 
 The [endeo](https://www.npmjs.com/package/endeo) package has the over-arching perspective of encoding and decoding values in sequence and handling streaming. It's possible to use [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte) directly for a variety of uses. My main focus is on [endeo](https://www.npmjs.com/package/endeo) and providing all the features.
 
-I've separated the parts into their own packages so they can be used standalone, and, so they can be replaced with custom implementations when using endeo. Also, they have separate github repo's so they have their own issues/PR's.
+I've separated the parts into their own packages so they can be used standalone and, so they can be replaced with custom implementations in an endeo instance. Also, they have separate github repo's so they have their own issues/PR's.
 
 The various parts can be developed and released separately.
 
@@ -29,9 +29,19 @@ See packages:
 5. [@endeo/output](https://www.npmjs.com/package/@endeo/output)
 
 
-TODO: I have an `@endeo/tck` package under development. It's a "test compatibility kit" with data to use when testing an implementation of endeo's encoding to ensure it works properly. The above packages have tests to ensure they work. When I finish the TCK then they will also be tested with that. The TCK allows alternate implementations to ensure they adhere to the spec. The alternate implementations may be written in other node community languages such as ES6+ and TypeScript. Or, it could be in other languages such as Java and Go. I plan to make other language implementations, eventually.
+##### TODO: TCK
 
-TODO: I have in development a package which reads an "object spec" from a JSON file. I'm also going to make one which reads a Google Protobuf ".proto" file to make a "creator function" and "enhancers" for an "object spec". This will allow using "proto" files with endeo to output endeo style encoding (not protobuf encoding).
+I have an `@endeo/tck` package under development. It's a "test compatibility kit" with data to use when testing an implementation of endeo's encoding to ensure it works properly.
+
+The above packages have tests to ensure they work. When I finish the TCK then they will also be tested with that.
+
+The TCK will allow alternate implementations to ensure they adhere to the spec. The alternate implementations may be written in other node community languages such as TypeScript. Or, it could be in other languages such as Java and Go. I plan to make other language implementations, eventually.
+
+##### TODO: objen
+
+I have in development a package which reads an "object spec" from a JSON file.
+
+I'm also going to make one which reads a Google Protocol Buffers ".proto" file to make a "creator function" and "enhancers" for an "object spec". This will allow using "proto" files with endeo to output endeo style encoding (not protobuf encoding).
 
 
 ## Install
@@ -43,7 +53,7 @@ TODO: I have in development a package which reads an "object spec" from a JSON f
 npm install --save endeo-std
 
 # when specifying custom components.
-# only use this when *avoiding* some standard implementations.
+# only use this when *replacing* some standard implementations.
 npm install --save endeo
 ```
 
@@ -51,26 +61,26 @@ npm install --save endeo
 
 A. [Simplified Examples](#a-simplified-examples)
 
-    1. [encode -> buffer -> decode](#)
-    2. [encode/decode via transform streams](#)
+  1. [encode -> buffer -> decode](#a1-encode---buffer---decode)
+  2. [encode/decode via transform streams](#a2-encodedecode-via-transform-streams)
 
 B. [Progressively Enhanced Use](#b-progressively-enhanced-use)
 
-    1. [generically encode any object](#)
-    2. [reduce string bytes](#)
-    3. [define an "object spec"](#)
-    4. [add "object spec" enhancers](#)
-    5. [specify types](#)
+  1. [generically encode any object](#b1-generically-encode-any-object)
+  2. [reduce string bytes](#b2-reduce-string-bytes)
+  3. [define an "object spec"](#b3-define-an-object-spec)
+  4. [add "object spec" enhancers](#b4-add-object-spec-enhancers)
+  5. [specify types](#b5-specify-types)
 
 C. [API](#c-api)
 
-    1. [builder/constructor](#)
-    2. [add() an object spec](#)
-    3. [create an input/output](#)
-    4. [encode() to buffer](#)
-    5. [encoder() transform](#)
-    6. [decode() from buffer](#)
-    7. [decoder() transform](#)
+  1. [builder/constructor](#c1-builderconstructor)
+  2. [add() an object spec](#c2-add-an-object-spec)
+  3. [create an input/output](#c3-create-an-inputoutput)
+  4. [encode() to buffer](#c4-encode-to-buffer)
+  5. [encoder() transform](#c5-encoder-transform)
+  6. [decode() from buffer](#c6-decode-from-buffer)
+  7. [decoder() transform](#c7-decoder-transform)
 
 D. [Vocabulary](#d-vocabulary)
 
@@ -621,7 +631,7 @@ endeo.encode('some string')
 
 // object()
 endeo.object({ generic: 'object' })
-endeo.object({ special: 'object, (imprinted)'})
+endeo.object({ special: 'object, (imprinted)' })
 endeo.object({ // manual imprint:
   $ENDEO_SPECIAL: spec,
   /* key/values */
@@ -790,7 +800,7 @@ decoder.write(anotherBuffer)
 Words and phrases I use while describing endeo stuff:
 
 phrase         |  description
-----------------------------------------------------------------------------
+--------------=|=-----------------------------------------------------------
 endeo          | name of the whole project, the spec, and the primary package
 object spec    | knows sequence of keys, their default values, optionally custom operations
 special object | an object **with** an "object spec"
