@@ -8,7 +8,7 @@ Encode and decode objects, arrays, strings into bytes.
 
 **endeo** => **en** code + **de** code = **o** bject
 
-The majority of encode and decode work is done by packages [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte). Their perspective is about the values they're given to encode and decode. For example, enbyte encodes `{}` as `EMPTY_OBJECT` and endeo encodes it as `[OBJECT, TERMINATOR]`
+The majority of encode and decode work is done by packages [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte). Their perspective is about the values they're given to encode and decode. For example, enbyte encodes `{}` as `EMPTY_OBJECT` and endeo encodes it as `[OBJECT, TERMINATOR]` (at top-level).
 
 The [endeo](https://www.npmjs.com/package/endeo) package has the over-arching perspective of encoding and decoding values in sequence and handling streaming. It's possible to use [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte) directly for a variety of uses. My main focus is on [endeo](https://www.npmjs.com/package/endeo) and providing all the features.
 
@@ -83,6 +83,8 @@ C. [API](#c-api)
   7. [decoder() transform](#c7-decoder-transform)
 
 D. [Vocabulary](#d-vocabulary)
+E. [Encoding Specification](#e-encoding-specification)
+F. [MIT License](#LICENSE)
 
 
 ## A. Simplified Examples
@@ -799,8 +801,9 @@ decoder.write(anotherBuffer)
 
 Words and phrases I use while describing endeo stuff:
 
+
 phrase         |  description
---------------=|=-----------------------------------------------------------
+-------------= | =-----------------------------------------------------------
 endeo          | name of the whole project, the spec, and the primary package
 object spec    | knows sequence of keys, their default values, optionally custom operations
 special object | an object **with** an "object spec"
@@ -820,4 +823,9 @@ full chunk     | a group of bytes which can be decoded into an object, array, or
 entry point    | there are multiple functions to encode and decode. these are "entry points". The `encode()` and `decode()` are the most generic "entry points" capable of handling any "top level" value. There are other functions for specific types of "top level" value. When you know the type you may use these to "get right to it".
 
 
-# [MIT License](LICENSE)
+## E. Encoding Specification
+
+.
+
+
+# F. [MIT License](LICENSE)
