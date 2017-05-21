@@ -23,10 +23,10 @@ See packages:
 3. [debyte](https://www.npmjs.com/package/debyte)
 4. [unstring](https://www.npmjs.com/package/unstring)
 5. [@endeo/decoder](https://www.npmjs.com/package/@endeo/decoder)
-5. [@endeo/bytes](https://www.npmjs.com/package/@endeo/bytes)
-5. [@endeo/types](https://www.npmjs.com/package/@endeo/types)
-5. [@endeo/input](https://www.npmjs.com/package/@endeo/input)
-5. [@endeo/output](https://www.npmjs.com/package/@endeo/output)
+6. [@endeo/bytes](https://www.npmjs.com/package/@endeo/bytes)
+7. [@endeo/types](https://www.npmjs.com/package/@endeo/types)
+8. [@endeo/input](https://www.npmjs.com/package/@endeo/input)
+9. [@endeo/output](https://www.npmjs.com/package/@endeo/output)
 
 
 ##### TODO: TCK
@@ -84,6 +84,10 @@ C. [API](#c-api)
 
 D. [Vocabulary](#d-vocabulary)
 E. [Encoding Specification](#e-encoding-specification)
+
+  1. [Indicator Byte](#e1-indicator-byte)
+  2. [Specifier Byte](#e2-specifier-byte)
+  
 F. [MIT License](#LICENSE)
 
 
@@ -821,11 +825,61 @@ standard       | I'm providing implementations for each part of the endeo work. 
 top level      | endeo considers an object, array, or string to be a "top level" object. A "full chunk" has one of those three.
 full chunk     | a group of bytes which can be decoded into an object, array, or string.
 entry point    | there are multiple functions to encode and decode. these are "entry points". The `encode()` and `decode()` are the most generic "entry points" capable of handling any "top level" value. There are other functions for specific types of "top level" value. When you know the type you may use these to "get right to it".
+known string   | the strings in an "unstring" are "known strings" and can be replaced with their ID during encoding.
 
 
 ## E. Encoding Specification
 
-.
+TODO: write up the spec. The below is part of it.
+
+### E1. Indicator Byte
+
+The first byte of a "top level" value's encoded results is the "indicator byte".
+
+A byte may have a value zero to 255. What do they mean as an "indicator":
+
+* **0 - 249** - It's the numeric ID of the "special object" encoded in the following bytes.
+* **250** - SPECIAL. It's a "special object" and its ID is 250 or greater so read an int to get its ID from the next byte(s).
+* **251** - OBJECT. It's a generically encoded object (has key/value pairs).
+* **252** - ARRAY. It's an array.
+* **253** - STRING. It's a string.
+* **254 - 255** - not used. It's the start of something so SUB_TERMINATOR and TERMINATOR aren't valid indicator bytes.
+
+In the future I may use 249 to mean "i'm sending you an object spec to learn". For now, 249 is open for business.
+
+
+### E2. Specifier Byte
+
+The first byte of a value is the "specifier byte". It specifies either the actual value or the info needed to read the following bytes to get the value.
+
+A byte may be from 0 to 255. Here's what they mean as a "specifier byte":
+
+* **0 - 100** - represent themselves. 0 is 0. 1 is 1. 100 is 100.
+* **101 - 200** - represent -1 to -100.
+* **201 - 208** - represent positive int with a certain number of bytes. 201 means 1 byte. 208 means 8 bytes.
+* **209 - 216** - represent negative int with a certain number of bytes. 209 means 1 byte. 216 means 8 bytes.
+* **217** - 4 byte floating point number
+* **218** - 8 byte floating point number
+* **219 - 237** - are unassigned.
+* **238** - represents a series of 5 default values
+* **239** - represents a series of default values preceded by an int specifying how many
+* **240** - represents the value is the default in the "object spec" for that key.
+* **241** - represents `null`
+* **242** - true
+* **243** - false
+* **244** - an empty string
+* **245** - an empty array
+* **246** - an empty object. Note, at the "top level", an empty object is `[OBJECT, TERMINATOR]` (`[251, 255]`)
+* **247** - raw bytes
+* **248** - it's a string for "unstring" to learn for later. It provides the ID (int), then the length (int), then the string's bytes.
+* **249** - it's a string ID for a "known string".
+* **250** - SPECIAL. It's a "special object" and its ID is 250 or greater so read an int to get its ID from the next byte(s).
+* **251** - OBJECT. It's a generically encoded object (has key/value pairs).
+* **252** - ARRAY. It's an array.
+* **253** - STRING. It's a string.
+* **254** - SUB_TERMINATOR marks the end of an inner value (object or array)
+* **255** - TERMINATOR ends a "top level" value (except a string). SUB_TERMINATOR's are collapsed into a TERMINATOR. So, if some inner things end at the end of the "top level" value then there won't be a series of SUB_TERMINATOR's followed by a TERMINATOR. There will only be the TERMINATOR. Avoids the redundancy.
+
 
 
 # F. [MIT License](LICENSE)
