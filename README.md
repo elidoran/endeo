@@ -83,6 +83,7 @@ C. [API](#c-api)
   7. [decoder() transform](#c7-decoder-transform)
 
 D. [Vocabulary](#d-vocabulary)
+
 E. [Encoding Specification](#e-encoding-specification)
 
   1. [Indicator Byte](#e1-indicator-byte)
@@ -831,6 +832,7 @@ known string   | the strings in an "unstring" are "known strings" and can be rep
 ## E. Encoding Specification
 
 TODO: write up the spec. The below is part of it.
+
 
 ### E1. Indicator Byte
 
