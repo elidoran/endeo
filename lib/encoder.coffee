@@ -13,7 +13,7 @@ module.exports = (options) ->
   transform = new Transform
 
     # can give it objects to encode
-    writableObjectMode: true
+    writableObjectMode: options?.writableObjectMode ? true
 
     # it sends forward Buffer's (not objects)
     readableObjectMode: false
