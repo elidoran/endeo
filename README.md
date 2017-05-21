@@ -864,23 +864,23 @@ byte/range    | description
 **209 - 216** | represent negative int with a certain number of bytes. 209 means 1 byte. 216 means 8 bytes.
 **217**       | 4 byte floating point number
 **218**       | 8 byte floating point number
-**219 - 237** | are unassigned.
+~~219 - 237~~ | are unassigned.
 **238**       | represents a series of 5 default values
-**239**       | represents a series of default values preceded by an int specifying how many
+**239**       | means the next value is an int specifying how many default values to use
 **240**       | represents the value is the default in the "object spec" for that key.
 **241**       | represents `null`
-**242**       | true
-**243**       | false
-**244**       | an empty string
-**245**       | an empty array
-**246**       | an empty object. Note, at the "top level", an empty object is `[OBJECT, TERMINATOR]` (`[251, 255]`)
+**242**       | `true`
+**243**       | `false`
+**244**       | an empty string, `''`
+**245**       | an empty array, `[]`
+**246**       | an empty object, `{}`. Note, at the "top level", an empty object is `[OBJECT, TERMINATOR]` (`[251, 255]`)
 **247**       | raw bytes
-**248**       | it's a string for "unstring" to learn for later. It provides the ID (int), then the length (int), then the string's bytes.
-**249**       | it's a string ID for a "known string".
+**248**       | next is info for a string "unstring" must learn for later. It provides the ID (int), then the length (int), then the string's bytes.
+**249**       | next is a string ID for a "known string".
 **250**       | SPECIAL. It's a "special object" and its ID is 250 or greater so read an int to get its ID from the next byte(s).
-**251**       | OBJECT. It's a generically encoded object (has key/value pairs).
-**252**       | ARRAY. It's an array.
-**253**       | STRING. It's a string.
+**251**       | OBJECT. It's a generically encoded object. It has a series of string/value pairs followed by a TERMINATOR.
+**252**       | ARRAY. It's an array. It has a series of values followed by a TERMINATOR.
+**253**       | STRING. It's a string. It has three forms. `[length, bytes]`, `[GET_STRING, id]`, `[NEW_STRING, id, length, bytes]`.
 **254**       | SUB_TERMINATOR marks the end of an inner value (object or array)
 **255**       | TERMINATOR ends a "top level" value (except a string). SUB_TERMINATOR's are collapsed into a TERMINATOR. So, if some inner things end at the end of the "top level" value then there won't be a series of SUB_TERMINATOR's followed by a TERMINATOR. There will only be the TERMINATOR. Avoids the redundancy.
 
