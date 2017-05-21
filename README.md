@@ -802,25 +802,25 @@ decoder.write(anotherBuffer)
 Words and phrases I use while describing endeo stuff:
 
 
-phrase         |  description
--------------= | =-----------------------------------------------------------
-endeo          | name of the whole project, the spec, and the primary package
-object spec    | knows sequence of keys, their default values, optionally custom operations
-special object | an object **with** an "object spec"
-generic        | an object **without** an "object spec"
-creator        | function returning new object with keys and default values for an "object spec"
-enhancer       | extra information to augment an "object spec" beyond the key and default value
-marker         | a byte with specific meaning in endeo encoding, such as `ARRAY`.
-encoder        | a transform stream which accepts objects and outputs Buffer's
-decoder        | a transform stream which accepts Buffer's (chunks of one thing, or chunks with multiple things, or partials) and outputs objects (or arrays, or String [cuz string isn't an object...])
-auto-learn     | an "unstring" instance may "learn" a new string when asked for its ID if restrictions allow it.
-unstring       | a package which caches strings, has configurable restrictions for auto-learning strings, and reduces bytes sent by replacing strings with their ID
-specials       | an instance of package `@endeo/specials` which can be trained with custom types and analyses a "creator" and "enhancers" to produce an "object spec"
-imprint        | an "object spec" may be provided as an arg to `objectWithSpec()` along with the object value. When I say "imprint" it, I mean either set the spec into the object with key `$ENDEO_SPECIAL`, use spec's `imprint()` method to set it on an object, or a class's prototype. The `imprint()` method sets `$ENDEO_SPECIAL` as a non-enumerable non-writable property on the target.
-standard       | I'm providing implementations for each part of the endeo work. When I say "standard" I mean these implementations I've made. To allow using endeo with custom implementations the `endeo` package doesn't have the "standard implementations" as dependencies. To install a single package which depends on all the "standard implementations" use the `endeo-std` package. It has no code content. It only depends on all the "standard implementations" so they'll be installed. It's a "package aggregator".
-top level      | endeo considers an object, array, or string to be a "top level" object. A "full chunk" has one of those three.
-full chunk     | a group of bytes which can be decoded into an object, array, or string.
-entry point    | there are multiple functions to encode and decode. these are "entry points". The `encode()` and `decode()` are the most generic "entry points" capable of handling any "top level" value. There are other functions for specific types of "top level" value. When you know the type you may use these to "get right to it".
+| phrase         |  description
+| -------------= | =-----------------------------------------------------------
+| endeo          | name of the whole project, the spec, and the primary package
+| object spec    | knows sequence of keys, their default values, optionally custom operations
+| special object | an object **with** an "object spec"
+| generic        | an object **without** an "object spec"
+| creator        | function returning new object with keys and default values for an "object spec"
+| enhancer       | extra information to augment an "object spec" beyond the key and default value
+| marker         | a byte with specific meaning in endeo encoding, such as `ARRAY`.
+| encoder        | a transform stream which accepts objects and outputs Buffer's
+| decoder        | a transform stream which accepts Buffer's (chunks of one thing, or chunks with multiple things, or partials) and outputs objects (or arrays, or String [cuz string isn't an object...])
+| auto-learn     | an "unstring" instance may "learn" a new string when asked for its ID if restrictions allow it.
+| unstring       | a package which caches strings, has configurable restrictions for auto-learning strings, and reduces bytes sent by replacing strings with their ID
+| specials       | an instance of package `@endeo/specials` which can be trained with custom types and analyses a "creator" and "enhancers" to produce an "object spec"
+| imprint        | an "object spec" may be provided as an arg to `objectWithSpec()` along with the object value. When I say "imprint" it, I mean either set the spec into the object with key `$ENDEO_SPECIAL`, use spec's `imprint()` method to set it on an object, or a class's prototype. The `imprint()` method sets `$ENDEO_SPECIAL` as a non-enumerable non-writable property on the target.
+| standard       | I'm providing implementations for each part of the endeo work. When I say "standard" I mean these implementations I've made. To allow using endeo with custom implementations the `endeo` package doesn't have the "standard implementations" as dependencies. To install a single package which depends on all the "standard implementations" use the `endeo-std` package. It has no code content. It only depends on all the "standard implementations" so they'll be installed. It's a "package aggregator".
+| top level      | endeo considers an object, array, or string to be a "top level" object. A "full chunk" has one of those three.
+| full chunk     | a group of bytes which can be decoded into an object, array, or string.
+| entry point    | there are multiple functions to encode and decode. these are "entry points". The `encode()` and `decode()` are the most generic "entry points" capable of handling any "top level" value. There are other functions for specific types of "top level" value. When you know the type you may use these to "get right to it".
 
 
 ## E. Encoding Specification
