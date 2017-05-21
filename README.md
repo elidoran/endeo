@@ -803,7 +803,7 @@ Words and phrases I use while describing endeo stuff:
 
 
 word or phrase |  description
---------------:|:-----------------------------------------------------------
+---------------|---------------------------------------------------------------------
 endeo          | name of the whole project, the spec, and the primary package
 object spec    | knows sequence of keys, their default values, optionally custom operations
 special object | an object **with** an "object spec"
