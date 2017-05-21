@@ -802,7 +802,7 @@ decoder.write(anotherBuffer)
 Words and phrases I use while describing endeo stuff:
 
 
-phrase         |  description
+word or phrase |  description
 --------------:|:-----------------------------------------------------------
 endeo          | name of the whole project, the spec, and the primary package
 object spec    | knows sequence of keys, their default values, optionally custom operations
