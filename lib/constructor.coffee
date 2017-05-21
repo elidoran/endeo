@@ -36,7 +36,8 @@ module.exports = (options) ->
 
   # use a decoder to decode in chunks via streaming
   @decoder = opts.decoder ? require('@endeo/decoder') {
-    bytes:@B, @specials, types: opts.types, @unstring, unstringOptions: opts.unstringOptions
+    context:
+      bytes:@B, @specs, types: opts.types, @unstring, unstringOptions: opts.unstringOptions
   }
 
   # if specs were provided to the constructor then build them via spec()
