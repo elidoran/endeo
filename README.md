@@ -924,13 +924,8 @@ Compare encoding a standard JSON string with a length header to various levels o
 }
 ```
 
-* The first big gain is from using less bytes to encode smaller ints
-* The next big gain is from replacing strings with ID's
-* Then a small gain from avoiding encoding all the main keys a few others (see below)
-* Then a 1% gain by using defaults for "key4" and "key14"
-* then a 2% gain by using custom type for the Date and a "select" for "key9"
 
-  #  | bytes     |  saved     | % reduced  | encoding method
+ \#  | bytes     |  saved     | % reduced  | encoding method
 ----:|:--------:|:----------:|:----------:|:---------------------------------------------------
 1    | 407       |      0     |     0%     | JSON.stringify() and buffer.write() length is 4 byte int.
 2    | 292       |    115     |    28%     | endeo generic object
@@ -938,6 +933,15 @@ Compare encoding a standard JSON string with a length header to various levels o
 4    | 168       |    239     |    59%     | endeo special object with only basic spec (keys)
 5    | 163       |    244     |    60%     | endeo special with some defaults (key4, key14)
 6    | 156       |    251     |    62%     | endeo special with 'day' type and select for key9
+
+
+Explanation:
+
+* The first big gain is from using less bytes to encode smaller ints
+* The next big gain is from replacing strings with ID's
+* Then a small gain from avoiding encoding all the main keys a few others (see below)
+* Then a 1% gain by using defaults for "key4" and "key14"
+* then a 2% gain by using custom type for the Date and a "select" for "key9"
 
 
 #### Strings Replaced
@@ -971,18 +975,24 @@ TODO: fill in more endeo/protobuf features
 
 feature description          |      endeo         |      PSON          |     protobuf
 ----------------------------:|:------------------:|:------------------:|:------------------------------:
-provides streaming           | :white_check_mark: | :x:                | :x:
-object definition            | :white_check_mark: | :x:                | :white_check_mark:
-object def avoids keys       | :white_check_mark: | :x:                | :x:
-1byte object IDs up to 249   | :white_check_mark: | :x:                | :x: (15 1 byte, then 2 bytes)
 reduced int bytes            | :white_check_mark: | :white_check_mark: | :white_check_mark:
-value choice array           | :white_check_mark: | :x:                | :white_check_mark:
-value choice any default     | :white_check_mark: | :x:                | :x:
-one-byte defaults            | :white_check_mark: | :x:                | :x: (it has defaults...)
 replace strings              | :white_check_mark: | :white_check_mark: | :x:
 configurable string learn    | :white_check_mark: | :x:                | :x:
+object definition            | :white_check_mark: | :x:                | :white_check_mark:
+object def avoids keys       | :white_check_mark: | :x:                | :x:
+1byte object IDs up to 249   | :white_check_mark: | :x:                | :x:
+provides streaming           | :white_check_mark: | :x:                | :x:
+value choice array           | :white_check_mark: | :x:                | :white_check_mark:
+value choice any default     | :white_check_mark: | :x:                | :x:
+one-byte defaults            | :white_check_mark: | :x:                | :x: (?)
 generate classes             | :x:                | :x:                | :white_check_mark:
 multiple languages           | :x:                | :x:                | :white_check_mark:
+
+Instead of generating classes I prefer the way endeo's "object spec" can be applied to an object during encoding without the object being built/generated. Hooking into a JS class is as easy as imprinting the spec on the prototype. In other languages I see endeo providing the serializer/deserializer implementation hooked into that languages object serialization support, or, working like it does in JS.
+
+Also, it's going to be possible to generate classes from an endeo "object spec".
+
+I plan to support multiple languages.
 
 
 ### F2. Compression Table
