@@ -88,8 +88,14 @@ E. [Encoding Specification](#e-encoding-specification)
 
   1. [Indicator Byte](#e1-indicator-byte)
   2. [Specifier Byte](#e2-specifier-byte)
+  3. [Compression Savings](#e3-compression-savings)
 
-F. [MIT License](#LICENSE)
+F. [Comparison](#f-comparison)
+
+  1. [Feature Table](#f1-feature-table)
+  2. [Compression Table](#f2-compression-table)
+
+G. [MIT License](#LICENSE)
 
 
 ## A. Simplified Examples
@@ -887,5 +893,101 @@ byte/range    | description
 **255**       | TERMINATOR ends a "top level" value (except a string). SUB_TERMINATOR's are collapsed into a TERMINATOR. So, if some inner things end at the end of the "top level" value then there won't be a series of SUB_TERMINATOR's followed by a TERMINATOR. There will only be the TERMINATOR. Avoids the redundancy.
 
 
+### E3. Compression Savings
 
-# F. [MIT License](LICENSE)
+Compare encoding a standard JSON string with a length header to various levels of endeo encoding.
+
+```javascript
+{ // the object I used:
+  "key1": 1,
+  "key2": 257,
+  "key3": 65537,
+  "key4": 16777217,
+  "key5": 4294967297,
+  "key6": 1099511627777,
+  "key7": 281474976710657,
+  "key8": "an unknown string",
+  "key9": 'a known string',
+  "key9": "orange",
+  "key10": [
+    "some", "array", 1, 1000, 1000000,
+    { "object": "in the array" },
+    [ "array", "in the array" ]
+  ],
+  "key11": {
+    "key12": "inner object",
+    "key13": 12345,
+    "key14": -54321,
+    "key15": new Date(2001, 2, 3, 0, 0, 0, 0),
+    "array": [ "some", "array", "in inner object", 1, 55555, 99999999 ]
+  }
+}
+```
+
+* The first big gain is from using less bytes to encode smaller ints
+* The next big gain is from replacing strings with ID's
+* Then a small gain from avoiding encoding all the main keys a few others (see below)
+* Then a 1% gain by using defaults for "key4" and "key14"
+* then a 2% gain by using custom type for the Date and a "select" for "key9"
+
+  #  | bytes     |  saved     | % reduced  | encoding method
+----:|:--------:|:----------:|:----------:|:---------------------------------------------------
+1    | 407       |      0     |     0%     | JSON.stringify() and buffer.write() length is 4 byte int.
+2    | 292       |    115     |    28%     | endeo generic object
+3    | 200       |    207     |    51%     | endeo with some strings in unstring for replacement
+4    | 168       |    239     |    59%     | endeo special object with only basic spec (keys)
+5    | 163       |    244     |    60%     | endeo special with some defaults (key4, key14)
+6    | 156       |    251     |    62%     | endeo special with 'day' type and select for key9
+
+
+#### Strings Replaced
+
+* all main keys: "key1" thru "key15"
+* `'a known string'`
+* `'array'`
+* `'object'`
+
+#### some defaults
+
+* `key4 = 'orange'`
+* `key14 = -54321`
+
+
+## F. Comparison
+
+### F1. Feature Table
+
+Compare endeo features versus PSON and Google's protobuf.
+
+PSON focuses on replacing strings with int ID's. It's not trying to have these other features.
+
+Protobuf:
+
+* leaves streaming to be handled by the dev instead of supporting it directly (PSON too).
+* encodes an ID for each value so ones left out aren't encoded at all versus endeo encoding a NULL or DEFAULT for no-longer-used keys.
+* uses zig-zag int encoding versus endeo's "specifier byte" representing -100 to 100 or designating how many bytes to read for the int. Also, endeo "shifts" the values when stepping up to using another byte because the lowest number represented by that isn't 0, it's 1 more than the largest number represented by the previous number of bytes. This is because, if the value were less, we'd have used less bytes.
+
+TODO: fill in more endeo/protobuf features
+
+feature description          |      endeo         |      PSON          |     protobuf
+----------------------------:|:------------------:|:------------------:|:------------------------------:
+provides streaming           | :white_check_mark: | :x:                | :x:
+object definition            | :white_check_mark: | :x:                | :white_check_mark:
+object def avoids keys       | :white_check_mark: | :x:                | :x:
+1byte object IDs up to 249   | :white_check_mark: | :x:                | :x: (15 1 byte, then 2 bytes)
+reduced int bytes            | :white_check_mark: | :white_check_mark: | :white_check_mark:
+value choice array           | :white_check_mark: | :x:                | :white_check_mark:
+value choice any default     | :white_check_mark: | :x:                | :x:
+one-byte defaults            | :white_check_mark: | :x:                | :x: (it has defaults...)
+replace strings              | :white_check_mark: | :white_check_mark: | :x:
+configurable string learn    | :white_check_mark: | :x:                | :x:
+generate classes             | :x:                | :x:                | :white_check_mark:
+multiple languages           | :x:                | :x:                | :white_check_mark:
+
+
+### F2. Compression Table
+
+TODO: do the compression shown in E3 with PSON and protobuf (via a .proto file) and show the bytes used by each.
+
+
+# G. [MIT License](LICENSE)
