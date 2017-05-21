@@ -838,7 +838,7 @@ The first byte of a "top level" value's encoded results is the "indicator byte".
 
 A byte may have a value zero to 255. What do they mean as an "indicator":
 
-byte        | description
+byte/range  | description
 -----------:|:--------------------------------------------------------------------------------
 **0 - 249** | It's the numeric ID of the "special object" encoded in the following bytes.
 **250**     | SPECIAL. It's a "special object" and its ID is 250 or greater so read an int to get its ID from the next byte(s).
@@ -856,7 +856,7 @@ The first byte of a value is the "specifier byte". It specifies either the actua
 
 A byte may be from 0 to 255. Here's what they mean as a "specifier byte":
 
-byte          | description
+byte/range    | description
 -------------:|:--------------------------------------------------------------------------------
 **0 - 100**   | represent themselves. 0 is 0. 1 is 1. 100 is 100.
 **101 - 200** | represent -1 to -100.
