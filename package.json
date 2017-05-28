@@ -9,7 +9,18 @@
     "lib/encoder.js",
     "lib/index.js"
   ],
-  "keywords": [],
+  "keywords": [
+    "endeo",
+    "enbyte",
+    "debyte",
+    "encode",
+    "decode",
+    "stream",
+    "transform",
+    "bytes",
+    "encode object",
+    "unstring"
+  ],
   "author": "Eli Doran <eli+npm@elidoran.com>",
   "license": "MIT",
   "scripts": {
