@@ -8,6 +8,8 @@ Encode and decode objects, arrays, strings into bytes.
 
 **endeo** => **en** code + **de** code = **o** bject
 
+See the [Vocabulary](#d-vocabulary) section to make it easier to understand my references.
+
 The majority of encode and decode work is done by packages [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte). Their perspective is about the values they're given to encode and decode. For example, enbyte encodes `{}` as `EMPTY_OBJECT` and endeo encodes it as `[OBJECT, TERMINATOR]` (at top-level).
 
 The [endeo](https://www.npmjs.com/package/endeo) package has the over-arching perspective of encoding and decoding values in sequence and handling streaming. It's possible to use [enbyte](https://www.npmjs.com/package/enbyte) and [debyte](https://www.npmjs.com/package/debyte) directly for a variety of uses. My main focus is on [endeo](https://www.npmjs.com/package/endeo) and providing all the features.
@@ -157,9 +159,15 @@ encoder.write(object)
 
 Replace strings with ID's to reduce bytes required.
 
-An [unstring](https://www.npmjs.com/package/unstring) instance handles which strings are replaced. It has configurable restrictions controlling which strings it auto-learns. It also accepts strings at creation.
+An [unstring](https://www.npmjs.com/package/unstring) instance handles which strings are replaced. It has configurable restrictions controlling which strings it auto-learns during operation. You can add strings to it anytime via `add()` and `add1()`. You can specify strings at construction time.
 
-Provide expected strings for object keys and values.
+By default, an [unstring](https://www.npmjs.com/package/unstring) doesn't auto-learn strings. This ensures it doesn't auto-learn every string it sees. You must:
+
+1. enable "auto-learn" by configuring its restrictions when building endeo. See [C1. builder/constructor](#c1-builderconstructor).
+2. specify strings when building endeo. [C1. builder/constructor](#c1-builderconstructor).
+3. add strings at anytime.
+
+Below is an example of adding the strings:
 
 ```javascript
 // the keys are always strings,
@@ -188,11 +196,13 @@ var buffer = endeo.object(object)
 
 Configure endeo with an "object spec" for a known object key structure. Then it completely avoids sending keys.
 
+Essentially, both the sender and receiver know which objects are being sent between them so they can both learn the same group of "object specs" and avoid sending the keys. They may know some "object specs" the other doesn't but the ID's of the ones they communicate between them must match.
+
 Also, the "object spec" defines default values for the keys so default values are reduced to a single byte meaning "default".
 
-An "object spec" is easily defined with an object. The keys map to the default values.
+An "object spec" is easily defined with an object. The keys map to the default values. There's no new syntax to learn. Also, it can be written in JSON format which allows many languages to use it because they all have JSON parsers.
 
-The object is provided from a function I'll call a "creator" function. It has multiple uses. Providing the object to define the "object spec" is one. It's also used at decoding time to create a new object to fill with the decoded values.
+The object is provided from a function I'll call a "creator" function. It has multiple uses. One, it provides the object to define the "object spec". Two, it's used at decoding time to create a new object to fill with the decoded values.
 
 The "object spec" is remembered in endeo and retrieved when decoding. When encoding, it's provided to `objectWithSpec()` or embedded on the object with key `$ENDEO_SPECIAL`. A convenience method, `spec.imprint()` helps hide the property on an object or set it into a class's prototype.
 
@@ -247,11 +257,17 @@ buffer = endeo.special(object)
 
 ### B4. add "object spec" enhancers
 
-Providing enhancers will alter how an "object spec" is used. Enhancers:
+Providing enhancers will alter how an "object spec" is used.
 
-1. **type** - A type is a pre-defined enhancer. an `@endeo/specials` instance may be trained with types so the creator can reference them by name. Or, they can be specified in an enhancer's `type` property.
+The `enhancers` object is provided to `endeo.add()` as the second argument. Its keys correspond to the keys in the object provided by the "creator function".
+
+Each key specifies how it is enhanced by providing an object with the following keys.
+
+When providing only a known type's name use the shorthand by having the key's value be the string with the type's name.
+
+1. **type** - A type is a pre-defined enhancer. an `@endeo/specials` instance may be trained with types so the enhancers can reference the types by name.
 2. **encode** - A custom encode function to use for the value instead of analyzing it to determine how to encode it. Specifying this will speedup encoding by avoiding value analysis. It can also allow a custom byte encoding for the value. The function params are `(enbyte, value, output)`. See [enbyte](https://www.npmjs.com/package/enbyte) and [@endeo/output](https://www.npmjs.com/package/@endeo/output).
-3. **decode** - A custom decode function. If you specify a custom `encode()` then use this to specify its `decode()`.
+3. **decode** - A custom decode function. If you specify a custom `encode()` then use this to specify its `decode()`. The function params are `(debyte, input)`. See [debyte](https://www.npmjs.com/package/debyte) and [@endeo/input](https://www.npmjs.com/package/@endeo/input).
 4. **decoderNode** - This is for streaming decode via [@endeo/decoder](https://www.npmjs.com/package/@endeo/decoder). Encoding combines streaming (chunk encoding) and "put it all in one buffer" by using [@endeo/output](https://www.npmjs.com/package/@endeo/output) to handle that. The [@endeo/input](https://www.npmjs.com/package/@endeo/input) doesn't do the same for decoding. So, there is `decode()` for "i have it all in one buffer ready to decode" and `decoderNode` for [@endeo/decoder](https://www.npmjs.com/package/@endeo/decoder) when streaming. See [stating](https://www.npmjs.com/package/stating) to understand how the node should be implemented. The function params are `(control, nodes, context)` as for all stating nodes.
 5. **select** - when a key's value is always one from a set of values then provide the values in an array to the `select` property. In the creator function set the value of the key to the default value, as usual. This will encode the index of the value instead of the value itself.
 
